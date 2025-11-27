@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emendas Parlamentares - Santos/SP</title>
+    <meta name="description" content="Visualize as emendas parlamentares de deputados federais destinadas à cidade de Santos/SP">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="title">Emendas Parlamentares</h1>
+                <p class="subtitle">Deputados Federais que destinaram verbas para Santos/SP</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat-card">
+                    <span class="stat-value" id="totalEmendas">0</span>
+                    <span class="stat-label">Emendas</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="totalDeputados">0</span>
+                    <span class="stat-label">Deputados</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="totalValor">R$ 0</span>
+                    <span class="stat-label">Total Destinado</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="search-box">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M19 19L14.65 14.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Buscar por deputado, partido ou área...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="saude">Saúde</button>
+                <button class="filter-btn" data-filter="educacao">Educação</button>
+                <button class="filter-btn" data-filter="infraestrutura">Infraestrutura</button>
+                <button class="filter-btn" data-filter="cultura">Cultura</button>
+            </div>
+        </div>
+
+        <!-- Emendas Grid -->
+        <div class="emendas-grid" id="emendasGrid">
+            <!-- Cards serão inseridos via JavaScript -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                <path d="M32 58C46.3594 58 58 46.3594 58 32C58 17.6406 46.3594 6 32 6C17.6406 6 6 17.6406 6 32C6 46.3594 17.6406 58 32 58Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M32 21V32L38 38" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h3>Nenhuma emenda encontrada</h3>
+            <p>Tente ajustar os filtros ou termos de busca</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
