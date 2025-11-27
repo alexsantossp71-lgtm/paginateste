@@ -4,79 +4,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emendas Parlamentares - Santos/SP</title>
+    <title>Dashboard | Emendas Parlamentares - Baixada Santista</title>
     <meta name="description"
-        content="Visualize as emendas parlamentares de deputados federais destinadas à cidade de Santos/SP">
+        content="Dashboard de análise de emendas parlamentares dos deputados federais da Baixada Santista para Santos/SP">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <h1 class="title">Emendas Parlamentares - 2</h1>
-                <p class="subtitle">Deputados Federais da Baixada Santista - Santos/SP</p>
-            </div>
-            <div class="header-stats">
-                <div class="stat-card">
-                    <span class="stat-value" id="totalEmendas">0</span>
-                    <span class="stat-label">Emendas</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-value" id="totalDeputados">0</span>
-                    <span class="stat-label">Deputados</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-value" id="totalValor">R$ 0</span>
-                    <span class="stat-label">Total Destinado</span>
-                </div>
-            </div>
-        </header>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">EMENDAS</h2>
+            <p class="sidebar-subtitle">Baixada Santista</p>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span>Deputados</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">📈</span>
+                <span>Análises</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span>Relatórios</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <p>Santos/SP</p>
+            <p class="text-muted">2023-2024</p>
+        </div>
+    </aside>
 
-        <!-- Filters -->
-        <div class="filters">
-            <div class="search-box">
-                <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path
-                        d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="M19 19L14.65 14.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
-                <input type="text" id="searchInput" placeholder="Buscar por deputado, partido ou área...">
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div>
+                <h1 class="page-title">Dashboard de Emendas</h1>
+                <p class="page-subtitle">Monitoramento de emendas parlamentares destinadas a Santos</p>
             </div>
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="all">Todas</button>
-                <button class="filter-btn" data-filter="saude">Saúde</button>
-                <button class="filter-btn" data-filter="educacao">Educação</button>
-                <button class="filter-btn" data-filter="infraestrutura">Infraestrutura</button>
-                <button class="filter-btn" data-filter="cultura">Cultura</button>
+            <div class="top-bar-actions">
+                <span class="last-update">Última atualização: Hoje</span>
             </div>
         </div>
 
-        <!-- Emendas Grid -->
-        <div class="emendas-grid" id="emendasGrid">
-            <!-- Cards serão inseridos via JavaScript -->
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">TOTAL EMENDAS</div>
+                <div class="kpi-value" id="totalEmendas">0</div>
+                <div class="kpi-trend positive">+2 este ano</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">DEPUTADOS</div>
+                <div class="kpi-value" id="totalDeputados">0</div>
+                <div class="kpi-trend neutral">3 ativos</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">VALOR TOTAL</div>
+                <div class="kpi-value" id="totalValor">R$ 0</div>
+                <div class="kpi-trend positive">+15% vs 2023</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">EM EXECUÇÃO</div>
+                <div class="kpi-value" id="totalExecucao">0</div>
+                <div class="kpi-trend">Projetos ativos</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Distribution by Deputy -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Distribuição por Deputado</h3>
+                </div>
+                <div class="chart-body" id="deputadoChart">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Distribution by Area -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Distribuição por Área</h3>
+                </div>
+                <div class="chart-body" id="areaChart">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <input type="text" id="searchInput" class="search-input"
+                placeholder="Buscar por deputado, projeto ou área...">
+            <div class="filter-chips">
+                <button class="chip active" data-filter="all">Todas</button>
+                <button class="chip" data-filter="saude">Saúde</button>
+                <button class="chip" data-filter="educacao">Educação</button>
+                <button class="chip" data-filter="infraestrutura">Infraestrutura</button>
+                <button class="chip" data-filter="cultura">Cultura</button>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3>Emendas Detalhadas</h3>
+                <div class="table-actions">
+                    <span class="record-count" id="recordCount">0 registros</span>
+                </div>
+            </div>
+            <table class="data-table" id="dataTable">
+                <thead>
+                    <tr>
+                        <th>DEPUTADO</th>
+                        <th>PARTIDO</th>
+                        <th>PROJETO</th>
+                        <th>ÁREA</th>
+                        <th>VALOR</th>
+                        <th>ANO</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
         </div>
 
         <!-- Empty State -->
         <div class="empty-state" id="emptyState" style="display: none;">
-            <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-                <path
-                    d="M32 58C46.3594 58 58 46.3594 58 32C58 17.6406 46.3594 6 32 6C17.6406 6 6 17.6406 6 32C6 46.3594 17.6406 58 32 58Z"
-                    stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M32 21V32L38 38" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                    stroke-linejoin="round" />
-            </svg>
+            <div class="empty-icon">⚠</div>
             <h3>Nenhuma emenda encontrada</h3>
-            <p>Tente ajustar os filtros ou termos de busca</p>
+            <p>Ajuste os filtros ou termos de busca</p>
         </div>
-    </div>
+    </main>
 
     <script src="script.js"></script>
 </body>

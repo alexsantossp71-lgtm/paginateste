@@ -147,28 +147,12 @@ const emendasData = [
     }
 ];
 
-// Ícones e labels das áreas
+// Configuração de áreas
 const areaConfig = {
-    saude: {
-        icon: '🏥',
-        label: 'Saúde',
-        color: '#ef4444'
-    },
-    educacao: {
-        icon: '📚',
-        label: 'Educação',
-        color: '#3b82f6'
-    },
-    infraestrutura: {
-        icon: '🏗️',
-        label: 'Infraestrutura',
-        color: '#f59e0b'
-    },
-    cultura: {
-        icon: '🎭',
-        label: 'Cultura',
-        color: '#8b5cf6'
-    }
+    saude: { label: 'Saúde', icon: '🏥' },
+    educacao: { label: 'Educação', icon: '📚' },
+    infraestrutura: { label: 'Infraestrutura', icon: '🏗️' },
+    cultura: { label: 'Cultura', icon: '🎭' }
 };
 
 // Estado da aplicação
@@ -180,19 +164,20 @@ let searchTerm = '';
 document.addEventListener('DOMContentLoaded', () => {
     initializeFilters();
     initializeSearch();
-    updateStats();
-    renderEmendas();
+    updateKPIs();
+    renderCharts();
+    renderTable();
 });
 
 // Configurar filtros
 function initializeFilters() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
+    const filterChips = document.querySelectorAll('.chip');
 
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            currentFilter = button.dataset.filter;
+    filterChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            filterChips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            currentFilter = chip.dataset.filter;
             applyFilters();
         });
     });
@@ -208,41 +193,124 @@ function initializeSearch() {
     });
 }
 
-// Aplicar filtros e busca
+// Aplicar filtros
 function applyFilters() {
     filteredEmendas = emendasData.filter(emenda => {
-        // Filtro por área
         const matchesFilter = currentFilter === 'all' || emenda.area === currentFilter;
-
-        // Filtro por busca
         const matchesSearch = searchTerm === '' ||
             emenda.deputado.toLowerCase().includes(searchTerm) ||
             emenda.partido.toLowerCase().includes(searchTerm) ||
-            areaConfig[emenda.area].label.toLowerCase().includes(searchTerm) ||
-            emenda.projeto.toLowerCase().includes(searchTerm);
+            emenda.projeto.toLowerCase().includes(searchTerm) ||
+            areaConfig[emenda.area].label.toLowerCase().includes(searchTerm);
 
         return matchesFilter && matchesSearch;
     });
 
-    renderEmendas();
+    renderTable();
 }
 
-// Renderizar emendas
-function renderEmendas() {
-    const grid = document.getElementById('emendasGrid');
+// Atualizar KPIs
+function updateKPIs() {
+    const totalEmendas = emendasData.length;
+    const totalDeputados = new Set(emendasData.map(e => e.deputado)).size;
+    const totalValor = emendasData.reduce((sum, e) => sum + e.valor, 0);
+    const totalExecucao = emendasData.filter(e => e.status === 'em-execucao').length;
+
+    document.getElementById('totalEmendas').textContent = totalEmendas;
+    document.getElementById('totalDeputados').textContent = totalDeputados;
+    document.getElementById('totalValor').textContent = formatarValor(totalValor);
+    document.getElementById('totalExecucao').textContent = totalExecucao;
+}
+
+// Renderizar gráficos
+function renderCharts() {
+    renderDeputadoChart();
+    renderAreaChart();
+}
+
+// Gráfico de distribuição por deputado
+function renderDeputadoChart() {
+    const deputadoStats = {};
+
+    emendasData.forEach(emenda => {
+        if (!deputadoStats[emenda.deputado]) {
+            deputadoStats[emenda.deputado] = 0;
+        }
+        deputadoStats[emenda.deputado] += emenda.valor;
+    });
+
+    const maxValor = Math.max(...Object.values(deputadoStats));
+    const chartHtml = Object.entries(deputadoStats)
+        .sort((a, b) => b[1] - a[1])
+        .map(([deputado, valor]) => {
+            const percentage = (valor / maxValor) * 100;
+            const nome = deputado.split(' ').slice(0, 2).join(' ');
+            return `
+                <div class="chart-bar">
+                    <div class="chart-bar-label">
+                        <span class="chart-bar-name">${nome}</span>
+                        <span class="chart-bar-value">${formatarValor(valor)}</span>
+                    </div>
+                    <div class="chart-bar-track">
+                        <div class="chart-bar-fill" style="width: ${percentage}%"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+    document.getElementById('deputadoChart').innerHTML = chartHtml;
+}
+
+// Gráfico de distribuição por área
+function renderAreaChart() {
+    const areaStats = {};
+
+    emendasData.forEach(emenda => {
+        if (!areaStats[emenda.area]) {
+            areaStats[emenda.area] = 0;
+        }
+        areaStats[emenda.area] += emenda.valor;
+    });
+
+    const maxValor = Math.max(...Object.values(areaStats));
+    const chartHtml = Object.entries(areaStats)
+        .sort((a, b) => b[1] - a[1])
+        .map(([area, valor]) => {
+            const percentage = (valor / maxValor) * 100;
+            return `
+                <div class="chart-bar">
+                    <div class="chart-bar-label">
+                        <span class="chart-bar-name">${areaConfig[area].icon} ${areaConfig[area].label}</span>
+                        <span class="chart-bar-value">${formatarValor(valor)}</span>
+                    </div>
+                    <div class="chart-bar-track">
+                        <div class="chart-bar-fill" style="width: ${percentage}%"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+    document.getElementById('areaChart').innerHTML = chartHtml;
+}
+
+// Renderizar tabela
+function renderTable() {
+    const tableBody = document.getElementById('tableBody');
     const emptyState = document.getElementById('emptyState');
+    const recordCount = document.getElementById('recordCount');
+
+    recordCount.textContent = `${filteredEmendas.length} registros`;
 
     if (filteredEmendas.length === 0) {
-        grid.style.display = 'none';
+        tableBody.innerHTML = '';
         emptyState.style.display = 'block';
         return;
     }
 
-    grid.style.display = 'grid';
     emptyState.style.display = 'none';
 
-    grid.innerHTML = filteredEmendas.map((emenda, index) => {
-        const area = areaConfig[emenda.area];
+    const tableHtml = filteredEmendas.map(emenda => {
+        const statusClass = `status-${emenda.status}`;
         const statusLabels = {
             'em-execucao': 'Em Execução',
             'concluido': 'Concluído',
@@ -250,73 +318,31 @@ function renderEmendas() {
         };
 
         return `
-            <div class="emenda-card" style="animation-delay: ${index * 0.05}s">
-                <div class="emenda-header">
-                    <div class="deputado-info">
-                        <h3>${emenda.deputado}</h3>
-                        <span class="partido-tag">${emenda.partido}</span>
-                    </div>
-                    <div class="valor-badge">${formatarValor(emenda.valor)}</div>
-                </div>
-                
-                <div class="emenda-body">
-                    <div class="area-tag">
-                        <span class="area-icon">${area.icon}</span>
-                        <span>${area.label}</span>
-                    </div>
-                    <p class="projeto-desc">${emenda.projeto}</p>
-                </div>
-                
-                <div class="emenda-footer">
-                    <span class="ano-tag">Ano: ${emenda.ano}</span>
-                    <span class="status-tag ${emenda.status}">${statusLabels[emenda.status]}</span>
-                </div>
-            </div>
+            <tr>
+                <td>
+                    <div class="table-deputado">${emenda.deputado}</div>
+                </td>
+                <td>
+                    <div class="table-partido">${emenda.partido}</div>
+                </td>
+                <td>
+                    <div class="table-projeto">${emenda.projeto}</div>
+                </td>
+                <td>
+                    <div class="table-area">${areaConfig[emenda.area].icon} ${areaConfig[emenda.area].label}</div>
+                </td>
+                <td>
+                    <div class="table-valor">${formatarValor(emenda.valor)}</div>
+                </td>
+                <td>${emenda.ano}</td>
+                <td>
+                    <span class="table-status ${statusClass}">${statusLabels[emenda.status]}</span>
+                </td>
+            </tr>
         `;
     }).join('');
-}
 
-// Atualizar estatísticas
-function updateStats() {
-    const totalEmendas = emendasData.length;
-    const totalDeputados = new Set(emendasData.map(e => e.deputado)).size;
-    const totalValor = emendasData.reduce((sum, e) => sum + e.valor, 0);
-
-    // Animação dos números
-    animateValue('totalEmendas', 0, totalEmendas, 1000);
-    animateValue('totalDeputados', 0, totalDeputados, 1000);
-
-    const valorElement = document.getElementById('totalValor');
-    let currentValue = 0;
-    const increment = totalValor / 60;
-    const duration = 1500;
-    const stepTime = duration / 60;
-
-    const timer = setInterval(() => {
-        currentValue += increment;
-        if (currentValue >= totalValor) {
-            currentValue = totalValor;
-            clearInterval(timer);
-        }
-        valorElement.textContent = formatarValor(currentValue);
-    }, stepTime);
-}
-
-// Animar valores numéricos
-function animateValue(elementId, start, end, duration) {
-    const element = document.getElementById(elementId);
-    const range = end - start;
-    const increment = range / (duration / 16);
-    let current = start;
-
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= end) {
-            current = end;
-            clearInterval(timer);
-        }
-        element.textContent = Math.floor(current);
-    }, 16);
+    tableBody.innerHTML = tableHtml;
 }
 
 // Formatar valores monetários
