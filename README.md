@@ -16,7 +16,7 @@ Portal público para acompanhar emendas parlamentares destinadas aos nove munic�
 - Detalhamento de cada emenda;
 - Área administrativa protegida para cadastrar e excluir registros;
 - Sincronização preparada para a API do Portal da Transparência;
-- Pipeline de qualidade no GitHub Actions.
+- Verificações automatizadas de sintaxe e endpoints fundamentais.
 
 ## Tecnologias
 
