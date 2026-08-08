@@ -1,0 +1,10 @@
+# Environment and local runtime data
+.env
+.env.*
+!.env.example
+.tools/
+*.log
+
+# Dependencies and operating system files
+node_modules/
+.DS_Store

@@ -1,26 +1,77 @@
 # Observatório de Emendas — Baixada Santista
 
-Portal público e painel administrativo para acompanhar emendas destinadas aos nove municípios da Baixada Santista: Bertioga, Cubatão, Guarujá, Itanhaém, Mongaguá, Peruíbe, Praia Grande, Santos e São Vicente.
+[![Qualidade](https://github.com/alexsantossp71-lgtm/paginateste/actions/workflows/quality.yml/badge.svg?branch=arena%2F019fdec0-paginateste)](https://github.com/alexsantossp71-lgtm/paginateste/actions/workflows/quality.yml)
+[![Node.js 18+](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Dados abertos](https://img.shields.io/badge/dados-Portal%20da%20Transpar%C3%AAncia-005ca9)](https://portaldatransparencia.gov.br/)
 
-## Executar
+Portal público para acompanhar emendas parlamentares destinadas aos nove municípios da Baixada Santista, com painel de gestão e integração preparada para os dados abertos do Portal da Transparência.
 
-Requer Node.js 18 ou superior.
+> **Status:** versão inicial funcional. Os dados exibidos inicialmente são demonstrativos; a sincronização oficial é ativada ao configurar uma chave da CGU.
+
+## O que o projeto entrega
+
+- Dashboard público com indicadores, gráficos, busca e filtros;
+- Recorte por Bertioga, Cubatão, Guarujá, Itanhaém, Mongaguá, Peruíbe, Praia Grande, Santos e São Vicente;
+- Consulta por ano, área, parlamentar e município;
+- Detalhamento de cada emenda;
+- Área administrativa protegida para cadastrar e excluir registros;
+- Sincronização preparada para a API do Portal da Transparência;
+- Pipeline de qualidade no GitHub Actions.
+
+## Tecnologias
+
+| Camada | Solução |
+| --- | --- |
+| Interface | HTML, CSS e JavaScript puro |
+| API | Node.js, módulo `http` nativo |
+| Persistência inicial | JSON local (`data/emendas.json`) |
+| Fonte oficial | API de Dados Abertos do Portal da Transparência |
+| Deploy | Render (Blueprint incluído) |
+
+## Executar localmente
+
+**Pré-requisito:** Node.js 18 ou superior.
 
 ```bash
-cp .env.example .env # configure as variáveis
+git clone https://github.com/alexsantossp71-lgtm/paginateste.git
+cd paginateste
+git checkout arena/019fdec0-paginateste
+cp .env.example .env
 npm start
 ```
 
-Acesse `http://localhost:3000`. O painel fica em `/admin.html`.
+Abra `http://localhost:3000`. O painel administrativo está em `http://localhost:3000/admin.html`.
 
-## Dados oficiais
+## Variáveis de ambiente
 
-O botão **Sincronizar agora** usa a API do Portal da Transparência. Cadastre uma chave de API e configure `CGU_API_KEY` apenas no ambiente do servidor. Sem a chave, o portal continua funcionando com os registros de demonstração e os cadastrados manualmente.
+| Variável | Obrigatória | Finalidade |
+| --- | --- | --- |
+| `PORT` | Não | Porta do servidor; padrão `3000` |
+| `ADMIN_EMAIL` | Sim, em produção | E-mail do administrador |
+| `ADMIN_PASSWORD` | Sim, em produção | Senha do administrador |
+| `CGU_API_KEY` | Para sincronizar | Chave da API do Portal da Transparência |
+| `DATA_FILE` | Não | Caminho alternativo do arquivo de dados |
 
-A importação mantém apenas registros cuja localidade informada corresponda a um município da Baixada Santista. Antes de produção, configure `ADMIN_EMAIL` e uma senha forte em `ADMIN_PASSWORD`; o valor padrão existe somente para demonstração local.
+Nunca envie `.env` ou chaves de API ao repositório.
+
+## Qualidade
+
+```bash
+npm run check  # valida a sintaxe
+npm test       # testa os endpoints fundamentais
+```
 
 ## Publicação no Render
 
-O repositório inclui um `render.yaml` para criar um Web Service no Render. Ao criar o serviço, informe a `CGU_API_KEY` no painel de variáveis de ambiente e substitua `ADMIN_EMAIL` pelo e-mail administrativo desejado. O Render gera automaticamente uma senha inicial em `ADMIN_PASSWORD`; consulte ou substitua esse valor no painel antes do primeiro acesso.
+O arquivo [`render.yaml`](render.yaml) permite criar o serviço como um Blueprint no Render:
 
-> O plano gratuito do Render usa armazenamento efêmero: cadastros feitos pelo painel podem ser perdidos após um reinício/redeploy. Para produção, use um disco persistente ou migre a persistência para PostgreSQL.
+1. Crie um **Blueprint** no [Render](https://dashboard.render.com);
+2. Conecte este repositório e escolha a branch `arena/019fdec0-paginateste`;
+3. Configure `ADMIN_EMAIL`, `ADMIN_PASSWORD` e `CGU_API_KEY` no painel de ambiente;
+4. Faça o deploy.
+
+> O plano gratuito do Render possui armazenamento efêmero. Para produção, migre `data/emendas.json` para PostgreSQL ou use armazenamento persistente.
+
+## Contribuição e segurança
+
+Leia [CONTRIBUTING.md](CONTRIBUTING.md) antes de colaborar e [SECURITY.md](SECURITY.md) para relatar problemas de segurança.

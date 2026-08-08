@@ -6,14 +6,14 @@ const crypto = require('crypto');
 
 const PORT = Number(process.env.PORT || 3000);
 const ROOT = __dirname;
-const DATA_FILE = path.join(ROOT, 'data', 'emendas.json');
+const DATA_FILE = process.env.DATA_FILE || path.join(ROOT, 'data', 'emendas.json');
 const MUNICIPIOS = ['Bertioga','Cubatão','Guarujá','Itanhaém','Mongaguá','Peruíbe','Praia Grande','Santos','São Vicente'];
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@baixada.local';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'troque-esta-senha';
 const sessions = new Map();
 const contentTypes = {'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml'};
 function readData(){ try { return JSON.parse(fs.readFileSync(DATA_FILE,'utf8')); } catch { return []; } }
-function writeData(data){ fs.writeFileSync(DATA_FILE, JSON.stringify(data,null,2)); }
+function writeData(data){ fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true }); fs.writeFileSync(DATA_FILE, JSON.stringify(data,null,2)); }
 function json(res,status,payload){ res.writeHead(status, {'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'}); res.end(JSON.stringify(payload)); }
 function body(req){ return new Promise((ok, bad)=>{let out=''; req.on('data',p=>{out+=p;if(out.length>1e6)req.destroy()}); req.on('end',()=>{try{ok(out?JSON.parse(out):{})}catch{bad(new Error('JSON inválido'))}});}); }
 function getSession(req){ const id=(req.headers.cookie||'').match(/(?:^|; )bs_session=([^;]+)/)?.[1]; return id && sessions.get(id); }
