@@ -1,0 +1,16 @@
+{
+  "name": "paginateste",
+  "version": "1.0.0",
+  "description": "Dashboard de Emendas Parlamentares — Baixada Santista (HTML/CSS/JS vanilla, módulos ES)",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "serve": "python3 -m http.server 8000",
+    "lint": "eslint js/ test/"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0"
+  }
+}

@@ -173,3 +173,59 @@ Todas as 14 prioridades da seção 8 foram tratadas:
 - Ícones ainda são emojis (dependem da fonte do sistema); para consistência total, trocar por SVGs.
 - Sem fetch/estado de loading/erro (ainda não há dados externos).
 - Histórico do Git segue com commit único.
+
+---
+
+## 11. Evolução de protótipo para produto (2026-08-08, 2ª rodada)
+
+Aplicados **todos** os pontos de melhoria listados na seção 9. O projeto foi
+reescrito em módulos ES com separação de dados, lógica pura e UI.
+
+### Dados e fontes
+- ✅ Dados movidos para `data/emendas.json` (separados do código) e carregados via **`fetch`**.
+- ✅ **Metadados** com fonte e data da captura exibidos no topo ("Fonte: … · Atualizado: …") — não mais hardcoded.
+- ✅ **Validação de schema** (`validateData`/`validateEmenda`) rejeita dados inválidos antes de renderizar.
+- ✅ Escopo corrigido: "Santos/SP" no lugar de "Baixada Santista" (os dados são só de Santos).
+- ⚠️ A fonte real (Portal da Transparência / Câmara) ainda é demonstração — o `fetch` em `js/data.js` é o ponto único para trocar por uma API.
+
+### Funcionalidades de produto
+- ✅ **Execução financeira**: campos empenhado/liquidado/pago + `% executado` por emenda, com barra de progresso na tabela, no modal e KPI de **taxa de execução**.
+- ✅ **Exportar CSV** da lista filtrada (com BOM UTF-8) e **Imprimir / Salvar como PDF** (`@media print`).
+- ✅ **Evolução temporal**: novo gráfico de **linha** (valor por ano).
+- ✅ **Filtros por status, ano e deputado** (selects), além de área (chips) e busca.
+- ✅ **Navegação ‹/›** entre emendas no modal (teclado: ←/→).
+- ✅ **Estado na URL** (`history.replaceState`): filtros, página e ordenação compartilháveis/restauráveis.
+- ✅ Links mortos da sidebar marcados como **"em breve"** (`aria-disabled`, `tabindex="-1"`).
+
+### Gráficos
+- ✅ **Interatividade**: tooltips (`title`) e **clique/teclado para filtrar** em barras, donut e legenda.
+- ✅ **Acessibilidade**: `role="img"` + `aria-label` com resumo textual em cada gráfico.
+- ✅ **Variedade**: barras, **donut** (área) e **linha** (evolução).
+- ✅ **Proporção honesta**: rótulos mostram **`% do total`** (não só relativo ao máximo).
+- ✅ Cor por categoria/deputado **+ legenda com rótulos** (não só cor).
+
+### Escala/performance
+- ✅ **Memoização** do conjunto filtrado/ordenado (evita recálculo a cada render).
+- ✅ `font-display=swap` via `preconnect` (fontes do Google não bloqueiam tanto).
+
+### Acessibilidade
+- ✅ **Ícones em SVG** (sprite + `<use>`) substituindo emojis — consistentes em qualquer plataforma.
+- ✅ **`inert`** no conteúdo atrás do modal (fora do AT e da tab order).
+- ✅ **`prefers-reduced-motion`** respeitado (transições/animações desativadas).
+
+### Arquitetura/qualidade
+- ✅ **Modularização em ES modules** (`js/` — 13 módulos: domínio, store, dados, UI).
+- ✅ **Estado centralizado** com pub/sub (`state.js`).
+- ✅ **Lógica pura isolada** (`logic.js`) e **testada** — 26 testes em `node:test` (zero deps).
+- ✅ **ESLint** (flat config) + **CI no GitHub Actions** (testes + lint).
+- ⚠️ **TypeScript não adotado** deliberadamente: exigiria um passo de build, quebrando a natureza "sem build" do projeto. Em vez disso, a lógica pura recebeu **JSDoc com tipos** (cheque de tipos no editor sem build).
+
+### UX/visual
+- ✅ **Toggle claro/escuro** com persistência (`localStorage`) e respeito a `prefers-color-scheme`.
+- ✅ **Stylesheet de impressão** (`@media print`) — oculta sidebar/filtros/paginação.
+- ✅ **Estados de loading/erro** com botão "Tentar novamente".
+
+### Validação
+- `node --test`: **26/26** testes da lógica pura passando (zero dependências).
+- **ESLint**: 0 erros, 0 avisos.
+- **Smoke test de runtime** (jsdom + fetch polyfill): **41/41** verificações ponta-a-ponta — KPIs, execução financeira, tabela paginada, 3 gráficos SVG, filtros reativos, ordenação, modal com ‹/› e `inert`, estado na URL, export CSV e empty state.
