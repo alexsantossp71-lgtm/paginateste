@@ -1,6 +1,5 @@
 # Observatório de Emendas — Baixada Santista
 
-[![Qualidade](https://github.com/alexsantossp71-lgtm/paginateste/actions/workflows/quality.yml/badge.svg?branch=arena%2F019fdec0-paginateste)](https://github.com/alexsantossp71-lgtm/paginateste/actions/workflows/quality.yml)
 [![Node.js 18+](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Dados abertos](https://img.shields.io/badge/dados-Portal%20da%20Transpar%C3%AAncia-005ca9)](https://portaldatransparencia.gov.br/)
 
