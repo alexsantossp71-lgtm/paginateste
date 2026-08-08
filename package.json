@@ -1,0 +1,8 @@
+{
+  "name": "observatorio-emendas-baixada-santista",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portal público de acompanhamento de emendas parlamentares da Baixada Santista",
+  "scripts": { "start": "node server.js", "dev": "node server.js" },
+  "engines": { "node": ">=18" }
+}
