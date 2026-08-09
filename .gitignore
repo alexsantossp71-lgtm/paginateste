@@ -1,0 +1,11 @@
+# dependências
+node_modules/
+package-lock.json
+
+# cache de ferramentas
+.eslintcache
+.cache/
+
+# sistema
+.DS_Store
+Thumbs.db
