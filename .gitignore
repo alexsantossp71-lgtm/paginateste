@@ -6,6 +6,9 @@ package-lock.json
 .eslintcache
 .cache/
 
+# cache npm expandido como pasta literal
+%TEMP%/
+
 # sistema
 .DS_Store
 Thumbs.db

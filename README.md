@@ -7,6 +7,9 @@ claro/escuro.
 
 ![Stack](https://img.shields.io/badge/stack-HTML%2FCSS%2FJS%20(modules)-00ff88)
 ![Tests](https://img.shields.io/badge/testes-node--test-00ff88)
+![CI](https://img.shields.io/github/actions/workflow/status/alexsantossp71-lgtm/paginateste/ci.yml?label=CI&logo=github)
+![Pages](https://img.shields.io/github/actions/workflow/status/alexsantossp71-lgtm/paginateste/pages.yml?label=Pages&logo=github)
+![Tests](https://img.shields.io/badge/testes-26%20passando-00ff88)
 
 ## ✨ Funcionalidades
 
